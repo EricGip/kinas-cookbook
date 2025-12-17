@@ -12,6 +12,11 @@ from pydantic import BaseModel
 app = FastAPI()
 load_dotenv()
 
+
+client = pymongo.MongoClient(os.getenv("Mongodb_URI"))
+collection = client['Kinas-Cookbook']['RecipeBook']
+    
+
 class Recipe(BaseModel):
     name: str
     main_ingredients: list
@@ -34,7 +39,7 @@ async def test_db():
     RecipeBookRecipes = [
         {
             "name": "Lentils",
-            "main_ingredients": ["lentils", "onion", "garlic", "dried chillies", "carrot", "celery"],
+            "main_ingredients": ["lentils", "onion", "garlic", "dried chillies"],
             "seasonings": ["salt", "pepper", "cumin", "paprika", "turmeric"],
             "instructions": ["Cut aromatics, sauté in oil", "Add 1 Cup lentils and 4 cups of water into an instapot", "Pressure cook for 12 minutes"],
             "link": "test",
@@ -50,8 +55,8 @@ async def test_db():
         },
     ]
 
-    # insert documents
-    collection.insert_many(RecipeBookRecipes)
+    # # insert documents
+    # collection.insert_many(RecipeBookRecipes)
 
     result = collection.find_one({"name": "Lentils"})
 
@@ -60,5 +65,24 @@ async def test_db():
 
 @app.post("/recipes/", response_model=Recipe, status_code=status.HTTP_201_CREATED)
 async def create_recipe(recipe: Recipe):
-    logging.info(f"Creating recipe: {recipe.name}")
-    return f"Good to go: {recipe}"
+
+    # FastAPI expects this is the body of request in JSON
+    recipe =  {
+            "name": recipe.name,
+            "main_ingredients": recipe.main_ingredients,
+            "seasonings": recipe.seasonings,
+            "instructions": recipe.instructions,
+            "link": recipe.link,
+            "tags": recipe.tags
+        }
+    collection.insert_one(recipe)
+    
+    result = collection.find_one({"name": recipe})
+    return recipe
+
+@app.get("/recipes/", status_code=status.HTTP_200_OK)
+async def get_recipes(name: str): 
+    # FastAPI expects this is a query parameter
+    result = collection.find_one({"name": name})
+    result.pop("_id")
+    return result
