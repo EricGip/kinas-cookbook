@@ -40,14 +40,6 @@ import {
 
 export default function Home() {
   
-  // Both ways work, but the other code is more preferred.
-  // const [recipe, setRecipe] = React.useState("");
-  // const [ingredients, setIngredients] = React.useState("");
-  // const [seasonings, setSeasonings] = React.useState("");
-  // const [instructions, setInstructions] = React.useState("");
-  // const [recipeLink, setRecipeLink] = React.useState("");
-  // const [tags, setTags] = React.useState("");
-
   const [inputs, setInputs] = React.useState({
     recipeName: "",
     ingredients: "",
@@ -68,6 +60,38 @@ export default function Home() {
     e.preventDefault()
    console.log("test") 
   }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    
+    try {
+      const payload = {
+        recipeName: inputs.recipeName,
+        // main_ingredients: inputs.ingredients.split(",").map(i => i.trim()),
+        mainIngredients: [inputs.ingredients],
+        seasonings: [inputs.seasonings],
+        instructions: [inputs.instructions],
+        link: inputs.recipeLink,
+        tags: [inputs.tags]
+      }
+      
+      const response = await fetch("http://localhost:8000/recipes/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Request-Method": "POST"
+        },
+        body: JSON.stringify(payload)
+      })
+      if (!response.ok) {
+        throw new Error(`failed to add recipe: ${response.status}`)
+      }
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
   
   return (
     <div>
@@ -176,7 +200,7 @@ export default function Home() {
                     </FieldGroup>
               </FieldSet>
             </FieldGroup>
-            <Button type="submit" onClick={handleClick}>Submit</Button>
+            <Button type="submit" onClick={handleSubmit}>Submit</Button>
           </Form>
 
           <Card>

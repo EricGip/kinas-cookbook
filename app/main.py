@@ -2,6 +2,7 @@ import logging
 import pymongo
 import datetime
 import os
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -12,22 +13,33 @@ from pydantic import BaseModel
 app = FastAPI()
 load_dotenv()
 
-
 client = pymongo.MongoClient(os.getenv("Mongodb_URI"))
 collection = client['Kinas-Cookbook']['RecipeBook']
     
 
 class Recipe(BaseModel):
-    name: str
-    main_ingredients: list
+    recipeName: str
+    mainIngredients: list
     seasonings: list
     instructions: list
     link: str
     tags: list
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to Kina's Cookbook!"}
+
+@app.get("/cors-test")
+async def cors_test():
+    return {"ok": True}
 
 @app.get("/testDB")
 async def test_db():
@@ -68,8 +80,8 @@ async def create_recipe(recipe: Recipe):
 
     # FastAPI expects this is the body of request in JSON
     recipe =  {
-            "name": recipe.name,
-            "main_ingredients": recipe.main_ingredients,
+            "recipeName": recipe.recipeName,
+            "mainIngredients": recipe.mainIngredients,
             "seasonings": recipe.seasonings,
             "instructions": recipe.instructions,
             "link": recipe.link,
