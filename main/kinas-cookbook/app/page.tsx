@@ -1,4 +1,7 @@
+'use client'    
 import Image from "next/image";
+import Form from 'next/form'
+import React from "react";
 
 import {
   NavigationMenu,
@@ -11,6 +14,18 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+} from "@/components/ui/field"
 
 import {
   Card,
@@ -22,10 +37,41 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+
 export default function Home() {
+  
+  // Both ways work, but the other code is more preferred.
+  // const [recipe, setRecipe] = React.useState("");
+  // const [ingredients, setIngredients] = React.useState("");
+  // const [seasonings, setSeasonings] = React.useState("");
+  // const [instructions, setInstructions] = React.useState("");
+  // const [recipeLink, setRecipeLink] = React.useState("");
+  // const [tags, setTags] = React.useState("");
+
+  const [inputs, setInputs] = React.useState({
+    recipeName: "",
+    ingredients: "",
+    seasonings: "",
+    instructions: "",
+    recipeLink: "",
+    tags: ""
+  });
+
+  const handleChange = (e) => {
+    const recipe = e.target.name;
+    const value = e.target.value;
+    setInputs(values => ({...values, [recipe]: value}))
+    console.log(inputs)
+  }
+  
+  const handleClick = (e) => {
+    e.preventDefault()
+   console.log("test") 
+  }
+  
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start"> 
+    <div>
+      <main> 
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -40,39 +86,128 @@ export default function Home() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <Button>
-          Get Random Recipe - add api
-        </Button>
+          <Button onClick={handleClick}>
+            Get Random Recipe - add api
+          </Button>
+    
+          <Form action="/search">
+            <FieldGroup>
+              <FieldSet>
+                <FieldLegend> Add a new recipe </FieldLegend>
+                    <FieldGroup>
 
-        <Card>
-        <CardHeader>
-          <CardTitle> Randomized Dish Result</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-          <CardAction>View Recipe</CardAction>
-          <CardAction>I'm not feeling this, another result</CardAction>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
+                      <Field>
+                        <FieldLabel>
+                          Name of Recipe 
+                          <Input 
+                            type="text"
+                            name="recipeName"
+                            value={inputs.recipeName}
+                            onChange={handleChange}
+                            placeholder="Test"
+                          />
+                        </FieldLabel>
+                      </Field>
 
-        <Card>
-        <CardHeader>
-          <CardTitle> Recipe Detail</CardTitle>
-          <CardDescription> Recipe </CardDescription>
-          <CardAction>View Recipe</CardAction>
-          <CardAction>I'm not feeling this, another result</CardAction>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
+                      <Field>
+                        <FieldLabel>
+                          Ingredients
+                          <Input
+                            type="text"
+                            name="ingredients"
+                            value={inputs.ingredients}
+                            onChange={handleChange}
+                            placeholder="Test"
+                          />
+                        </FieldLabel>
+                      </Field>
+
+                      <Field>
+                        <FieldLabel>
+                          Seasonings
+                          <Input 
+                            type="text"
+                            name="seasonings"
+                            value={inputs.seasonings}
+                            onChange={handleChange}
+                            placeholder="Test"
+                          />
+                        </FieldLabel>
+                      </Field>
+
+                      <Field>
+                        <FieldLabel>
+                          Instruction
+                          <Textarea 
+                            name="instructions"
+                            value={inputs.instructions}
+                            onChange={handleChange}
+                            placeholder="Test"
+                          />
+                        </FieldLabel>
+                      </Field>
+
+                      <Field>
+                        <FieldLabel>
+                          link
+                          <Input 
+                            type="text"
+                            name="recipeLink"
+                            value={inputs.recipeLink}
+                            onChange={handleChange}
+                            placeholder="Test"
+                          />
+                        </FieldLabel>
+                      </Field>
+
+                      <Field>
+                        <FieldLabel>
+                          tags
+                          <Input 
+                            type="text"
+                            name="tags"
+                            value={inputs.tags}
+                            onChange={handleChange}
+                            placeholder="Test"
+                          />
+                        </FieldLabel>
+                      </Field>
+
+                    </FieldGroup>
+              </FieldSet>
+            </FieldGroup>
+            <Button type="submit" onClick={handleClick}>Submit</Button>
+          </Form>
+
+          <Card>
+          <CardHeader>
+            <CardTitle> Randomized Dish Result</CardTitle>
+            <CardDescription>Card Description</CardDescription>
+          </CardHeader>
+            <CardAction >View Recipe</CardAction>
+            <CardAction>I'm not feeling this, another result</CardAction>
+          <CardContent>
+            <p>Card Content</p>
+          </CardContent>
+          <CardFooter>
+            <p>Card Footer</p>
+          </CardFooter>
+        </Card>
+
+          <Card>
+          <CardHeader>
+            <CardTitle> Recipe Detail</CardTitle>
+            <CardDescription> Recipe </CardDescription>
+          </CardHeader>
+            <CardAction>View Recipe</CardAction>
+            <CardAction>I'm not feeling this, another result</CardAction>
+          <CardContent>
+            <p>Card Content</p>
+          </CardContent>
+          <CardFooter>
+            <p>Card Footer</p>
+          </CardFooter>
+        </Card>
 
       </main>
     </div>

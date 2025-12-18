@@ -82,7 +82,8 @@ async def create_recipe(recipe: Recipe):
 
 @app.get("/recipes/", status_code=status.HTTP_200_OK)
 async def get_recipes(name: str): 
-    # FastAPI expects this is a query parameter
+    # FastAPI expects takes in the argument as a json in body
     result = collection.find_one({"name": name})
+    # Have to pop this out in order to return result to readable format 
     result.pop("_id")
     return result
