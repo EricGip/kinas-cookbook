@@ -1,9 +1,10 @@
-from typing import str, List
+from typing import List
+from pydantic import BaseModel
 
-class recipe():
-    name: str
-    main_ingredients: list
-    seasonings: list
-    instructions: str
+class Recipe(BaseModel):
+    recipe_name: str
+    main_ingredients: List[str]
+    seasonings: List[str]
+    instructions: List[str]
     link: str
-    tags: list
+    tags: List[str]

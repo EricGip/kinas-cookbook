@@ -2,6 +2,7 @@
 import RandomDishCard from "@/components/RandomDishCard"
 import NewRecipeForm from "@/components/RecipeForm"
 import NavBar from "@/components/Navbar"
+import ShowRecipeCard from "@/components/ShowRecipeCard"
 
 export default function Home() {
     
@@ -17,6 +18,7 @@ export default function Home() {
         < NavBar />
         < NewRecipeForm />
         < RandomDishCard />
+        < ShowRecipeCard />
 
       </main>
     </div>
